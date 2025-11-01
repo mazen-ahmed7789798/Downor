@@ -1,6 +1,10 @@
 "This Module is Connected To Database"
 
 import sqlite3
+from typing import Union, List, Tuple
+from typing import Any
+
+
 
 db = sqlite3.connect("DownloadManager.db")
 cur = db.cursor()
@@ -29,16 +33,17 @@ def is_new_user():
 
 # import data from table
 def import_data(
-    table_name: str, many=None, condition=None, columns: str | list | tuple = "all"
-):
+    table_name: str,
+    many: Any | None = None,
+    condition: Any | None = None,
+    columns: str | list[Any] | tuple[Any, ...] = "all",
+) -> str | list[Any]:
     """This Function is used to import data from database
     `Table Name `: This A Table Name Which Will Get The Data From It
     `Many`: This How Many Row You Want To Get It (Not Necessary)"""
     # Table Name Condition
     if not table_name:
         return "Table Name is Required"
-    if not isinstance(table_name, str):
-        return "Table Name is Must be String"
     # Columns Param Condition
     if columns == "all":
         columns = "*"
@@ -74,12 +79,13 @@ def import_data(
             return cur.fetchmany(many)
 
 
-# insert data with safe placeholders
+
 def inserting_data(
-    table_name: str, columns: str | list | tuple, values: str | list | tuple
-):
-    """This Function is used to insert data into database
-    `Table Name `: This A Table Name Which Will Insert The Data Into It"""
+    table_name: str,
+    columns: Union[str, List[str], Tuple[str, ...]],
+    values: Union[str, List[str], Tuple[str, ...]]
+) -> None:
+    """Insert data into the database safely."""
     if isinstance(columns, (list, tuple)):
         cols = "(" + ", ".join(columns) + ")"
         placeholders = "(" + ", ".join(["?"] * len(values)) + ")"
@@ -98,4 +104,4 @@ def inserting_data(
 
 if __name__ == "__main__":
 
-    import Downloader_manager
+    import Downloader_manager # type:ignore
