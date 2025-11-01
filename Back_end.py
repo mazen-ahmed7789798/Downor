@@ -1,4 +1,5 @@
 "This File For Downloading Media From Internet"
+
 # ------------------------------------------------------------------------------
 # -------------------------- Downloader Manager Back-End -----------------------
 # ------------------------------------------------------------------------------
@@ -8,9 +9,7 @@ from youtube_search import YoutubeSearch
 from yt_dlp import YoutubeDL, utils
 
 from requests import get
-from PIL import Image
 import os
-from io import BytesIO
 
 test_listUrls = [
     "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
@@ -23,28 +22,30 @@ opts = {
     "no_warnings": True,
 }
 
-class Video :
+
+class Video:
     "This is Video Class"
-    def __init__(self,title,quality,length,path,datetime):
+
+    def __init__(self, title: str, length: str, path: str, datetime: str):
         self.title = title
         self.length = length
-        self.quality = quality
         self.path = path
         self.datetime = datetime
-        
+
+
 class Downloader:
     "This is Video Class"
 
-    def YoutubeSearchInfoExtractor(self,title,max_results=5):
+    def YoutubeSearchInfoExtractor(self, title : str, max_results : int =5) -> dict:
         results = YoutubeSearch(title, max_results=max_results).to_dict()
         return results
 
-    def get_video_info(self,url: str):
+    def get_video_info(self, url: str) -> str:
         ydl_opts = {"quiet": True, "skip_download": True}
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        with YoutubeDL(ydl_opts) as ydl:
             return ydl.extract_info(url, download=False)
 
-    def check_url(self, user_url) -> str:
+    def check_url(self, user_url : str) -> str:
         "This Function Gets Url From The User"
         try:
             page = get(user_url)
@@ -57,7 +58,8 @@ class Downloader:
                 "Error or wrong URL. Check your internet connection and try again.",
                 e,
             )
-    def path_validator(self,path: str):
+
+    def path_validator(self, path: str):
         if not os.path.exists(path):
             return False, "❌ المجلد غير موجود."
         if not os.path.isdir(path):
@@ -70,16 +72,16 @@ class Downloader:
         """This Function To Download A Video
         Param  Video_url : This's a Link Of Playlist Page.
         Param  Video_path : This's a Path which Will Playlist Download On It ."""
-        
+
         # URL Checking
-        if self.check_url(url) is False :
+        if self.check_url(url) is False:
             return self.check_url(url)
         url = url
         # Path Checking
-        if self.path_validator(file_path) is False :
-            return  self.path_validator(file_path)
+        if self.path_validator(file_path) is False:
+            return self.path_validator(file_path)
         video_path = file_path
-        opts["outtmpl"] = os.path.join(file_path,self.get_video_info(url)["title"])
+        opts["outtmpl"] = os.path.join(file_path, self.get_video_info(url)["title"])
         # try:
         #     with YoutubeDL(opts) as ytd:
         #         info = ytd.extract_info(url, download=True)
@@ -94,7 +96,8 @@ class Downloader:
         #         inserting_data("downloads", "(thumbnail)", (f"{info.get("title")}.jpg",))
         # except utils.DownloadError as e:
         #     print("Download failed:", e)
-    def download_audio(self,audio_url: str, audio_path: str):
+
+    def download_audio(self, audio_url: str, audio_path: str):
         """This Function To Download Audio Only
         Param  Audio_url : This's a Link Of Audio Page.
         Param  Audio_path : This's a Path which Will Audio Download in It ."""
@@ -117,10 +120,10 @@ class Downloader:
         data = import_data("downloads")
         return data
 
+
 example = Downloader()
 print(example.path_validator("C:"))
 
 # if __name__ == "__main__":
 
 #     import Downloader_manager
-
