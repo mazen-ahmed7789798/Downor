@@ -1,0 +1,84 @@
+from PyQt5.QtWidgets import (
+    QApplication,
+    QWidget,
+    QTabWidget,
+    QLabel,
+    QVBoxLayout,
+    QPushButton,
+)
+
+from PyQt5.QtGui import QIcon, QMovie
+from PyQt5.QtCore import QTimer, QSize
+from tabs.Home import Home_tab
+
+app = QApplication([])
+with open("stylesheet.qss", "r") as r:
+    app.setStyleSheet(r.read())
+
+window = QWidget()
+window.setGeometry(150, 150, 900, 500)
+window.setMinimumSize(310, 400)
+window.setWindowTitle("Download Manager")
+window.setWindowIcon(QIcon("Assests\\AppIcon.png"))
+layout = QVBoxLayout()
+layout.setContentsMargins(0, 0, 0, 0)  # يلغى الـ margin
+layout.setSpacing(0)
+# The Loader GIF
+loader_label = QLabel(window)
+loader_movie = QMovie("Assests\\Equalizer.gif")
+loader_label.setMovie(loader_movie)
+loader_movie.start()
+loader_label.setGeometry(375, 200, window.width() - 650, 100)
+loader_label.setObjectName("loader_label")
+
+tab_widget = QTabWidget(window)
+tab_widget.setVisible(False)
+tab_widget.setGeometry(0, 0, window.width(), window.height())
+tab_widget.setMovable(True)
+tab_widget.setIconSize(QSize(25, 15))
+protected_tabs = []
+
+
+def make_close_button(index, deletable):
+    btn = QPushButton("x")
+    btn.setFixedSize(20, 20)
+    btn.setObjectName("close-tab-button")
+    btn.setToolTip("Close Tab")
+
+    if deletable:
+        btn.clicked.connect(lambda _, i=index: tabs.removeTab(i))
+    else:
+        pass
+    return btn
+
+
+def add_custom_tab(widget, title, deletable=True):
+    index = tab_widget.addTab(widget, title)
+    if not deletable:
+        protected_tabs.append(index)
+    tab_widget.tabBar().setTabButton(
+        index, tab_widget.tabBar().RightSide, make_close_button(index, deletable)
+    )
+
+
+add_custom_tab(Home_tab, "Home", False)
+tab_widget.setTabIcon(
+    0,
+    QIcon(
+        "Assests\\HomeIcon.png",
+    ),
+)
+
+
+def show_main():
+    loader_label.deleteLater()
+    tab_widget.setVisible(True)
+
+
+QTimer.singleShot(3000, show_main)
+layout.addWidget(tab_widget)
+window.setLayout(layout)
+
+window.show()
+
+app.exec_()
