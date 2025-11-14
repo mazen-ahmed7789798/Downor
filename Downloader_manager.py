@@ -23,25 +23,18 @@ window.setWindowIcon(QIcon("Assests\\AppIcon.png"))
 layout = QVBoxLayout()
 layout.setContentsMargins(0, 0, 0, 0)  # يلغى الـ margin
 layout.setSpacing(0)
-# The Loader GIF
-loader_label = QLabel(window)
-loader_movie = QMovie("Assests\\Equalizer.gif")
-loader_label.setMovie(loader_movie)
-loader_movie.start()
-loader_label.setGeometry(375, 200, window.width() - 650, 100)
-loader_label.setObjectName("loader_label")
 
 tab_widget = QTabWidget(window)
 tab_widget.setVisible(False)
-tab_widget.setGeometry(0, 0, window.width(), window.height())
+tab_widget.setGeometry(0, 2, window.width(), window.height())
 tab_widget.setMovable(True)
 tab_widget.setIconSize(QSize(25, 15))
 protected_tabs = []
 
 
 def make_close_button(index, deletable):
-    btn = QPushButton("x")
-    btn.setFixedSize(20, 20)
+    btn = QPushButton(parent=tab_widget,icon=QIcon("Assests\\cross.png"))
+    btn.setFixedSize(5, 5)
     btn.setObjectName("close-tab-button")
     btn.setToolTip("Close Tab")
 
@@ -71,7 +64,7 @@ tab_widget.setTabIcon(
 
 
 def show_main():
-    loader_label.deleteLater()
+
     tab_widget.setVisible(True)
 
 

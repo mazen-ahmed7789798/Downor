@@ -1,53 +1,31 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QTabWidget, QVBoxLayout, QLabel, QPushButton, QScrollArea
-from PyQt5.QtCore import Qt
-import sys
+import requests
 
-app = QApplication(sys.argv)
+API_KEY = "3be540f9a18741afa81b9cb2ebdf68d8"
+query = 'صفوة الصفوة'
+url = "https://listen-api.listennotes.com/api/v2/search"
 
-# النافذة الرئيسية
-window = QWidget()
-window.setWindowTitle("Tabs Example")
-window.resize(700, 500)
+headers = {
+    "X-ListenAPI-Key": API_KEY
+}
 
-main_layout = QVBoxLayout(window)
+params = {
+    "q": query,       # الكلمة اللي هتبحث عنها
+    "type": "podcast", # أو "episode" لو عايز تبحث عن حلقة محددة
+    "limit": 5         # عدد النتائج
+}
 
-# عنصر التابات
-tabs = QTabWidget()
-tabs.setTabsClosable(True)  # اجعل التابات قابلة للإغلاق
-tabs.tabCloseRequested.connect(lambda index: tabs.removeTab(index))
+r = requests.get(url, headers=headers, params=params)
+data = r.json()
 
-# تاب ثابت (Home)
-home_tab = QWidget()
-home_layout = QVBoxLayout(home_tab)
-home_layout.addWidget(QLabel("محتوى التاب الرئيسي (Home)"))
-tabs.addTab(home_tab, "Home")
+results = data.get("results", [])[0]
 
-# تاب يحتوي على ScrollArea (مثال لصفحة طويلة)
-scroll_tab = QWidget()
-scroll_layout = QVBoxLayout(scroll_tab)
-scroll_area = QScrollArea()
-scroll_area.setWidgetResizable(True)
-content = QWidget()
-content_layout = QVBoxLayout(content)
-for i in range(30):
-    content_layout.addWidget(QLabel(f"سطر محتوى {i+1}"))
-scroll_area.setWidget(content)
-scroll_layout.addWidget(scroll_area)
-tabs.addTab(scroll_tab, "Scrollable")
+# for key , value  in results[0].items():     
+#     print(f"{key}: {value}")
 
-main_layout.addWidget(tabs)
-
-# زر لإضافة تاب جديد ديناميكيًا
-def add_new_tab():
-    new_tab = QWidget()
-    layout = QVBoxLayout(new_tab)
-    layout.addWidget(QLabel(f"تاب جديد رقم {tabs.count()+1}"))
-    tabs.addTab(new_tab, f"Tab {tabs.count()+1}")
-    tabs.setCurrentWidget(new_tab)  # انتقل للتاب الجديد فورًا
-
-add_btn = QPushButton("Add New Tab")
-add_btn.clicked.connect(add_new_tab)
-main_layout.addWidget(add_btn)
-
-window.show()
-sys.exit(app.exec_())
+print("Title:", results.get("title_original"))
+print("Publisher:", results.get("publisher_original"))
+print("Description:", results.get("description_original"))
+print("Listen Notes URL:", results.get("listennotes_url"))
+print("Total Episodes:", results.get("total_episodes"))
+print("Image URL:", results.get("image"))
+# print("RSS Feed:", results.get("rss"))

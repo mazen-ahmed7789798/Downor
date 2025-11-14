@@ -1,8 +1,8 @@
-QLabel#loader_label{
+QLabel#loader_label {
     border-radius: 50px;
 }
 
-QPushButton#main_btn{
+QPushButton#main_btn {
     background-color: #0077ff;
     border: none;
     color: white;
@@ -11,19 +11,33 @@ QPushButton#main_btn{
     padding: 6px;
 }
 
-QPushButton#close-tab-button{
+
+
+QPushButton#close-tab-button {
+    background-color: transparent;
     border: none;
-    font-size: 15px;
-}
-QIcon{
-    margin-top: 10px;
-}
-#new-btn {
 
-    font-size: 24px;
+    /* color: white; */
+    font-size: 16px;
+    padding: 4px;
+}
+
+QPushButton#new-btn {
     background-color: #000000;
-    border-radius: 30px;
-    color :beige;
+    border: none;
+    color: white;
+    font-size: 20px;
+    border-radius: 20px;
+    padding: 4px;
+}
 
+/* How To Customize QTabBar Tabs */
+QTabBar::tab {
 
+    margin-left: 10px;
+    background-color: #e2e1e1;
+    width: 120px;
+    margin-top: 2px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
 }
