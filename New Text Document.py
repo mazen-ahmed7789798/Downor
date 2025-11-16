@@ -1,58 +1,99 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel
-from PyQt5.QtCore import Qt, QPropertyAnimation, QTimer, QRect, QEasingCurve
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QGraphicsOpacityEffect
+from PyQt5.QtCore import Qt, QPropertyAnimation, QSequentialAnimationGroup, QParallelAnimationGroup, QRect, QTimer
+from PyQt5.QtGui import QFont
 import sys
 
-class SplashScreen(QWidget):
+
+class Splash(QWidget):
     def __init__(self):
         super().__init__()
+
         self.setFixedSize(600, 400)
-        self.setStyleSheet("background-color: white;")
-        self.init_ui()
-        
-    def init_ui(self):
-        # اللوجو الأساسي
-        self.logo = QLabel(self)
-        self.logo_pixmap = QPixmap("97708b54-9248-4adf-8004-5a3ea44b9b49.png")  # ضع هنا مسار صورة اللوجو الأساسي
-        self.logo.setPixmap(self.logo_pixmap.scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+        self.setStyleSheet("background:#ffffff;")
+
+        # ---------------------------------------------------
+        # عنصر اللوجو الأساسي
+        self.logo = QLabel("D", self)
+        self.logo.setFont(QFont("Arial", 120, QFont.Bold))
         self.logo.setAlignment(Qt.AlignCenter)
-        self.logo.setGeometry(200, 100, 200, 200)
-        
-        # اسم البرنامج كصورة
-        self.name_img = QLabel(self)
-        self.name_pixmap = QPixmap("95b6597a-90bb-479f-8c33-b2320438d159.png")  # ضع هنا مسار صورة الاسم
-        self.name_img.setPixmap(self.name_pixmap.scaled(300, 60, Qt.KeepAspectRatio, Qt.SmoothTransformation))
-        self.name_img.setAlignment(Qt.AlignCenter)
-        self.name_img.setGeometry(150, 220, 300, 60)
-        self.name_img.setVisible(False)
-        
-        self.animate()
+        self.logo.setGeometry(0, 80, 600, 180)
+
+        self.logo_fx = QGraphicsOpacityEffect()
+        self.logo.setGraphicsEffect(self.logo_fx)
+        self.logo_fx.setOpacity(0)
+
+        # ---------------------------------------------------
+        # اسم البرنامج
+        self.name = QLabel("Downor", self)
+        self.name.setFont(QFont("Arial", 48, QFont.Bold))
+        self.name.setAlignment(Qt.AlignCenter)
+        self.name.setGeometry(0, 260, 600, 80)
+
+        self.name_fx = QGraphicsOpacityEffect()
+        self.name.setGraphicsEffect(self.name_fx)
+        self.name_fx.setOpacity(0)
+
+        # ---------------------------------------------------
+        QTimer.singleShot(0, self.animate)
 
     def animate(self):
-        # تأخير بسيط قبل ظهور الاسم
-        def show_name():
-            self.name_img.setVisible(True)
-            anim = QPropertyAnimation(self.name_img, b"geometry")
-            anim.setDuration(800)
-            anim.setStartValue(QRect(250, 220, 0, 60))
-            anim.setEndValue(QRect(150, 220, 300, 60))
-            anim.setEasingCurve(QEasingCurve.OutCubic)
-            anim.start()
-            
-            # بعد الانتهاء، يختفي الاسم تدريجيًا
-            anim.finished.connect(hide_name)
+        seq = QSequentialAnimationGroup()
 
-        def hide_name():
-            fade = QPropertyAnimation(self.name_img, b"windowOpacity")
-            fade.setDuration(500)
-            fade.setStartValue(1)
-            fade.setEndValue(0)
-            fade.start()
+        # ---------------- 1) LOGO FADE-IN -------------------
+        fade_logo = QPropertyAnimation(self.logo_fx, b"opacity")
+        fade_logo.setDuration(500)
+        fade_logo.setStartValue(0)
+        fade_logo.setEndValue(1)
 
-        QTimer.singleShot(500, show_name)
+        seq.addAnimation(fade_logo)
+
+        # ---------------- 2) NAME APPEAR ---------------------
+        fade_name_in = QPropertyAnimation(self.name_fx, b"opacity")
+        fade_name_in.setDuration(400)
+        fade_name_in.setStartValue(0)
+        fade_name_in.setEndValue(1)
+
+        slide_name_in = QPropertyAnimation(self.name, b"geometry")
+        slide_name_in.setDuration(400)
+        slide_name_in.setStartValue(QRect(0, 280, 600, 80))   # تحت شوية
+        slide_name_in.setEndValue(QRect(0, 260, 600, 80))     # مكانه النهائي
+
+        g1 = QParallelAnimationGroup()
+        g1.addAnimation(fade_name_in)
+        g1.addAnimation(slide_name_in)
+
+        seq.addAnimation(g1)
+
+        # ---------------- 3) NAME DISAPPEAR --------------------
+        fade_name_out = QPropertyAnimation(self.name_fx, b"opacity")
+        fade_name_out.setDuration(350)
+        fade_name_out.setStartValue(1)
+        fade_name_out.setEndValue(0)
+
+        seq.addAnimation(fade_name_out)
+
+        # ---------------- 4) LOGO PULSE -------------------------
+        pulse_up = QPropertyAnimation(self.logo, b"geometry")
+        pulse_up.setDuration(200)
+        pulse_up.setStartValue(QRect(0, 80, 600, 180))
+        pulse_up.setEndValue(QRect(-10, 70, 620, 200))
+
+        pulse_down = QPropertyAnimation(self.logo, b"geometry")
+        pulse_down.setDuration(200)
+        pulse_down.setStartValue(QRect(-10, 70, 620, 200))
+        pulse_down.setEndValue(QRect(0, 80, 600, 180))
+
+        g2 = QSequentialAnimationGroup()
+        g2.addAnimation(pulse_up)
+        g2.addAnimation(pulse_down)
+
+        seq.addAnimation(g2)
+
+        seq.start()
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    splash = SplashScreen()
-    splash.show()
+    w = Splash()
+    w.show()
     sys.exit(app.exec_())

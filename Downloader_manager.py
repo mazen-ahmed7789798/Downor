@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QIcon, QMovie
 from PyQt5.QtCore import QTimer, QSize
 from tabs.Home import Home_tab
-
+from tabs.SplaSh import SplashScreen
 app = QApplication([])
 with open("stylesheet.qss", "r") as r:
     app.setStyleSheet(r.read())
@@ -18,7 +18,7 @@ with open("stylesheet.qss", "r") as r:
 window = QWidget()
 window.setGeometry(150, 150, 900, 500)
 window.setMinimumSize(310, 400)
-window.setWindowTitle("Download Manager")
+window.setWindowTitle("Downor")
 window.setWindowIcon(QIcon("Assests\\AppIcon.png"))
 layout = QVBoxLayout()
 layout.setContentsMargins(0, 0, 0, 0)  # يلغى الـ margin
@@ -62,13 +62,14 @@ tab_widget.setTabIcon(
     ),
 )
 
+splash_screen = SplashScreen(window)
 
 def show_main():
-
+    splash_screen.deleteLater()
     tab_widget.setVisible(True)
 
 
-QTimer.singleShot(3000, show_main)
+# QTimer.singleShot(6000, show_main)
 layout.addWidget(tab_widget)
 window.setLayout(layout)
 
