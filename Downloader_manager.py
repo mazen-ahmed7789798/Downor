@@ -19,7 +19,7 @@ window = QWidget()
 window.setGeometry(150, 150, 900, 500)
 window.setMinimumSize(310, 400)
 window.setWindowTitle("Downor")
-window.setWindowIcon(QIcon("Assests\\AppIcon.png"))
+window.setWindowIcon(QIcon("tabs\\Our_Logo.png"))
 layout = QVBoxLayout()
 layout.setContentsMargins(0, 0, 0, 0)  # يلغى الـ margin
 layout.setSpacing(0)
@@ -69,7 +69,7 @@ def show_main():
     tab_widget.setVisible(True)
 
 
-# QTimer.singleShot(6000, show_main)
+QTimer.singleShot(6000, show_main)
 layout.addWidget(tab_widget)
 window.setLayout(layout)
 

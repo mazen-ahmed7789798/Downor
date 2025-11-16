@@ -95,8 +95,8 @@ class SplashScreen(QWidget):
         self.main_logo_label.setVisible(True)
         self.anim1 = QPropertyAnimation(self.main_logo_label, b"geometry")
         self.anim1.setDuration(2000)
-        self.anim1.setStartValue(QRect(700, 180, 300, 110))
-        self.anim1.setEndValue(QRect(350, 190, 300, 110))
+        self.anim1.setStartValue(QRect(700, 185, 300, 110))
+        self.anim1.setEndValue(QRect(350, 185, 300, 110))
         self.anim1.setEasingCurve(QEasingCurve.OutBounce)
         self.anim1.start()
 
