@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import (
-    QApplication,nbbbbbbbbbbbbbbbbbbbbbbbbbbmmmnnnnnnnnnnnnnnnnnnn
-    QWidget,    `32222szzzzzzzzzzzzzzzzzZ`
+    QApplication,
+    QWidget,
     QTabWidget,
     QLabel,
     QVBoxLayout,
