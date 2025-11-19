@@ -41,3 +41,12 @@ QTabBar::tab {
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
 }
+
+QLabel#Program_Loader {
+
+    border-color: #000000;
+    border-width: 0px;
+    background-color: ivory;
+    border-radius: 10px;
+}
+
