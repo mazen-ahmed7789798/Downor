@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import (
-    QApplication,
-    QWidget,
+    QApplication,nbbbbbbbbbbbbbbbbbbbbbbbbbbmmmnnnnnnnnnnnnnnnnnnn
+    QWidget,    `32222szzzzzzzzzzzzzzzzzZ`
     QTabWidget,
     QLabel,
     QVBoxLayout,
@@ -11,18 +11,18 @@ from PyQt5.QtGui import QIcon, QMovie
 from PyQt5.QtCore import QTimer, QSize
 from tabs.Home import Home_tab
 from tabs.SplaSh import SplashScreen
-app = QApplication([])
+app = QApplication([])                                                                                                                                                                                                                                                                                  
 with open("stylesheet.qss", "r") as r:
     app.setStyleSheet(r.read())
 
 window = QWidget()
-window.setGeometry(150, 150, 900, 500)
+window.setGeometry(150, 150, 900, 500)                       
 window.setMinimumSize(310, 400)
 window.setWindowTitle("Downor")
 window.setWindowIcon(QIcon("tabs\\Our_Logo.png"))
 layout = QVBoxLayout()
-layout.setContentsMargins(0, 0, 0, 0)  # يلغى الـ margin
-layout.setSpacing(0)
+layout.setContentsMargins(0, 0, 0, 0)  # يلغى الـ margin 
+layout.setSpacing(0)                                  
 
 tab_widget = QTabWidget(window)
 tab_widget.setVisible(False)
