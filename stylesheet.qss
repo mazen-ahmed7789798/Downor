@@ -32,14 +32,11 @@ QPushButton#new-btn {
 }
 
 /* How To Customize QTabBar Tabs */
-QTabBar::tab {
+/* QTabBar::tab {
 
-    margin-left: 10px;
-    background-color: #e2e1e1;
-    width: 120px;
-    margin-top: 2px;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
+    background-color: ;
+    border-color
+
 }
 
 QLabel#Program_Loader {
@@ -48,5 +45,12 @@ QLabel#Program_Loader {
     border-width: 0px;
     background-color: ivory;
     border-radius: 10px;
-}
+} */
 
+/* QScrollArea{
+    border :none;
+} */
+QLabel#label_1{
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: large;
+}

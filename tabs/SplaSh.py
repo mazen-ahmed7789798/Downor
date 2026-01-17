@@ -38,11 +38,40 @@ class SplashScreen(QWidget):
 
     def init_ui(self):
         self.setFixedSize(900, 500)
-        self.setGeometry(0, 0, 900, 500)
+        self.setGeometry(0, 0, 800, 500)
         self.setWindowTitle("Splash Screen")
 
         self.logo_label = QLabel(self)
         self.logo_label.setAlignment(Qt.AlignCenter)
+
+        # -------------------------------------------------------------
+        self.bar = QLabel(self)
+        self.bar.setVisible(True)
+        self.bar.setGeometry(350, 320, 250, 1)
+        self.bar.setObjectName("Program_Loader")
+
+        # البلوك المتحرك (عرضه = نص الشريط)
+        block_width = int(self.bar.width() / 3)
+        self.block = QLabel(self)
+        self.block.setGeometry(300, 320, block_width, 1)
+        # explicit styles and ensure visibility
+        self.bar.setStyleSheet(f"background: floralwhite; border-radius: 10px; border-color : floralwhite;")
+        self.bar.show()
+        # glossy black gradient for better contrast
+        self.block.setStyleSheet(
+            "background: qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 rgba(255,255,255,0.08), stop:0.1 #000000, stop:1 #111111); border-radius: 10px;"
+        )
+        self.block.show()
+        # تأكد أن الشريط والبلوك فوق باقي العناصر
+        self.bar.raise_()
+        self.block.raise_()
+        self.block_width = self.block.width()
+        bar_x = self.bar.x()
+
+        bar_width = self.bar.width()
+        self.start_x = bar_x
+        self.end_x = bar_x + (bar_width - block_width)
+        # -------------------------------------------------------------
 
         Our_logo = QPixmap("tabs\Our_Logo.png")
         main_logo = QPixmap("tabs\second_log.png")
@@ -80,30 +109,11 @@ class SplashScreen(QWidget):
             self.logo_label.setPixmap(scaled)
             # ابدأ من أسفل
             self.logo_label.setGeometry(390, 180, 120, 120)
-            QTimer.singleShot(700, self.animation_part1)
+            QTimer.singleShot(1000, self.animation_part1)
 
         # --- create loader here so it always exists (not only after main animation) ---
         # الشريط الخلفي (ثابت) placed near bottom
-        self.bar = QLabel(self)
-        self.bar.setVisible(True)
-        self.bar.setGeometry(320, 320, 300, 1)
-        self.bar.setObjectName("Program_Loader")
 
-        # البلوك المتحرك (عرضه = نص الشريط)
-        block_width = int(self.bar.width() / 3)
-        self.block = QLabel(self)
-        self.block.setGeometry(300, 320, block_width, 1)
-        # explicit styles and ensure visibility
-        self.bar.setStyleSheet("background: whitesmoke; border-radius: 10px;")
-        self.bar.show()
-        # glossy black gradient for better contrast
-        self.block.setStyleSheet(
-            "background: qlineargradient(x1:0,y1:0,x2:0,y2:1, stop:0 rgba(255,255,255,0.08), stop:0.1 #000000, stop:1 #111111); border-radius: 10px;"
-        )
-        self.block.show()
-        # تأكد أن الشريط والبلوك فوق باقي العناصر
-        self.bar.raise_()
-        self.block.raise_()
 
         # start loader animation shortly after init
         QTimer.singleShot(150, self.start_animation)
@@ -128,25 +138,19 @@ class SplashScreen(QWidget):
 
     def start_animation(self):
 
-        block_width = self.block.width()
-        bar_x = self.bar.x()
-        bar_width = self.bar.width()
-        start_x = bar_x
-        end_x = bar_x + (bar_width - block_width)
-
         # ---------------------------------------------
         # forward animation
         self.anim_forward = QPropertyAnimation(self.block, b"geometry")
         self.anim_forward.setDuration(1000)
-        self.anim_forward.setStartValue(QRect(start_x, self.bar.y(), block_width, 20))
-        self.anim_forward.setEndValue(QRect(end_x, self.bar.y(), block_width, 20))
+        self.anim_forward.setStartValue(QRect(self.start_x, self.bar.y(), self.block_width, 20))
+        self.anim_forward.setEndValue(QRect(self.end_x, self.bar.y(), self.block_width, 20))
         self.anim_forward.setEasingCurve(QEasingCurve.InOutQuad)
         # ---------------------------------------------
         # backward animation
         self.anim_backward = QPropertyAnimation(self.block, b"geometry")
         self.anim_backward.setDuration(1000)
-        self.anim_backward.setStartValue(QRect(end_x, self.bar.y(), block_width, 20))
-        self.anim_backward.setEndValue(QRect(start_x, self.bar.y(), block_width, 20))
+        self.anim_backward.setStartValue(QRect(self.end_x, self.bar.y(), self.block_width, 20))
+        self.anim_backward.setEndValue(QRect(self.start_x, self.bar.y(), self.block_width, 20))
         self.anim_backward.setEasingCurve(QEasingCurve.InOutQuad)
 
         # ---------------------------------------------
@@ -162,5 +166,6 @@ if __name__ == "__main__":
     app = QApplication([])
     win = QWidget()
     splash_screen = SplashScreen(win)
+    
     win.show()
     sys.exit(app.exec_())

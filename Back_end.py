@@ -3,7 +3,7 @@ This File For Downloading Media From Internet
 """
 
 # ---------------------------------------------------------------------------
-# -------------------------- Downloader Manager Back-End -------------------
+# -------------------------- Downloader Manager Back-End --------------------
 # ---------------------------------------------------------------------------
 
 from databass_conection import inserting_data, import_data
@@ -34,11 +34,11 @@ opts: Dict[str, Any] = {
 #         self.length = length
 #         self.path = path
 #         self.datetime = datetime
-
-
 class Downloader:
     """Downloader Class"""
-
+    API_KEY = "3be540f9a18741afa81b9cb2ebdf68d8"
+    url = "https://listen-api.listennotes.com/api/v2/search"
+    wrong_value = 'Please upgrade to PRO or ENTERPRISE plan to see this field. Learn more: listennotes.com/api/pricing'
     def clean_path(self, path: str) -> str:  # This Base Downloader Class
         """إزالة الرموز غير المدعومة من المسار"""
         return sub(r"[^\w\s.-]", "", path)
@@ -88,9 +88,7 @@ class Downloader:
         directory = os.path.dirname(video_path)
         filename = os.path.basename(video_path)
         output_path = os.path.join(directory, filename)
-
-        try:
-            command = [
+        command = [
                 "ffmpeg",
                 "-y",
                 "-i",
@@ -105,8 +103,9 @@ class Downloader:
                 "copy",
                 "-disposition:v:1",
                 "attached_pic",
-                output_path,
+                output_path
             ]
+        try:
 
             run(command, stdout=PIPE, stderr=PIPE, check=True)
             # نحذف الملف المؤقت إذا كان مختلفاً عن النهائي
@@ -173,13 +172,51 @@ class Downloader:
         return True, "✅ المسار صالح وجاهز للاستخدام."
 
     def show_history(cls) -> List[Dict[str, Any]]:
+
         if self.__class__ is not Downloader:
             raise RuntimeError(
                 "This method cannot be inherited Use the specific class method in Your Class."
             )
         data = import_data("downloads")
         return cast(List[Dict[str, Any]], data)
+    
+    def search_for_podcast(self,title : str ,max_result : int = 5, _type : str = "podcast") :
+        _type = _type.lower()
+        if _type not in ["podcast", "episode"] :
+            return "The type must be Podcast or episode"
+        query = str(title)
+        headers = {
+            "X-ListenAPI-Key": Downloader.API_KEY
+        }
+        # print(query,_type,max_result)
+        params = {
+            "q": query,        # الكلمة اللي هتبحث عنها
+            "type": _type, # أو "episode" لو عايز تبحث عن حلقة محددة
+            "limit": max_result #if isinstance(max_result , int) else 5       # عدد النتائج
+        }
 
+        r = get(Downloader.url, headers=headers, params=params)
+        data = r.json().get("results")
+        new_data = []
+        new_podcast = {}
+        i = 0
+        for podcast in data :
+            for key, value in podcast.items() :
+                if value != Downloader.wrong_value :
+                    new_podcast[key] = value
+                    print(i)
+                    i+=1
+            new_data.append(new_podcast)
+        del data 
+
+        return new_data
+
+    def audio_podcast_search(self, title ) :
+        print(self.__class__)
+        result = []
+        result.append(self.search_for_podcast(title))
+        result.append(self.search_for_eposide(title))
+        return result
 
 class VideoDownloader(Downloader):
     """Video Downloader Class"""
@@ -271,14 +308,10 @@ class AudioDownloader(Downloader):
             print("Download failed:", e)
 
 
-example_downloader = VideoDownloader()
+class PlaylistDownloader(Downloader) :
 
-print(
-    example_downloader.download_video(
-        "C:\\Users\\Mazen\\Desktop",
-        "https://www.youtube.com"
-        + example_downloader.YoutubeSearchInfoExtractor("ولا يخاف عقابها ياسر ممدوح")[
-            0
-        ]["url_suffix"],
-    )
-)
+    def __init__(self) :
+        super.__init__()
+
+example = Downloader()
+print(KeyboardInterrupt())

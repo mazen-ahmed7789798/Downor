@@ -16,7 +16,7 @@ with open("stylesheet.qss", "r") as r:
     app.setStyleSheet(r.read())
 
 window = QWidget()
-window.setGeometry(150, 150, 900, 500)                       
+window.setGeometry(100, 150, 900, 500)                       
 window.setMinimumSize(310, 400)
 window.setWindowTitle("Downor")
 window.setWindowIcon(QIcon("tabs\\Our_Logo.png"))
@@ -34,7 +34,7 @@ protected_tabs = []
 
 def make_close_button(index, deletable):
     btn = QPushButton(parent=tab_widget,icon=QIcon("Assests\\cross.png"))
-    btn.setFixedSize(5, 5)
+    btn.setFixedSize(6, 6)
     btn.setObjectName("close-tab-button")
     btn.setToolTip("Close Tab")
 
@@ -67,7 +67,6 @@ splash_screen = SplashScreen(window)
 def show_main():
     splash_screen.deleteLater()
     tab_widget.setVisible(True)
-
 
 QTimer.singleShot(6000, show_main)
 layout.addWidget(tab_widget)
